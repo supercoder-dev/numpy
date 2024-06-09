@@ -19,6 +19,18 @@ except ImportError:
 
 IS_PYPY = sys.implementation.name == 'pypy'
 
+IS_PYTHON_313 = sys.version_info >= (3, 13)
+if IS_PYTHON_313:
+    import os
+    GIL_OVERRIDE = os.getenv('PYTHON_GIL', '1') != '0'
+    if GIL_OVERRIDE:
+        warnings.warn(
+            "The global interpreter lock (GIL) has been enabled to load module "
+            "'PIL._imaging', which has not declared that it can run safely without the GIL. "
+            "To override this behavior and keep the GIL disabled (at your own risk), "
+            "run with PYTHON_GIL=0 or -Xgil=0.",
+            RuntimeWarning
+        )
 if sys.byteorder == 'little':
     _nbo = '<'
 else:
